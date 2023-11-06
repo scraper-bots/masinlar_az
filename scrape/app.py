@@ -7,7 +7,7 @@ import io
 import base64
 
 def run_scrapy_spider(spider_name):
-    project_path = "C:/Users/Ismat/scrape/scrape/scrape/spiders"
+    project_path = "scrape/scrape/scrape/spiders"
     subprocess.run(["scrapy", "crawl", spider_name], cwd=project_path)
 def load_and_display_data(data_path):
     if os.path.exists(data_path):
@@ -24,7 +24,7 @@ if st.button(f"Run {selected_spider.capitalize()} Spider"):
     run_scrapy_spider(selected_spider)
     st.write(f"{selected_spider.capitalize()} Spider has been run. Please reload the page to see the scraped data.")
 
-data_path = f"/path/to/your/scrapy/project/{selected_spider}_output.json"
+data_path = f"scrape/scrape/scrape/spiders/{selected_spider}_output.json"
 scraped_data = load_and_display_data(data_path)
 
 def get_table_download_link(df):
@@ -40,16 +40,10 @@ def get_table_download_link(df):
 if st.button("Download as XLSX"):
     if scraped_data:
         df = pd.DataFrame(scraped_data)
-
-        # Create a pop-up menu for choosing the download location
         download_location = st.file_uploader("Choose a download location", type=["xlsx"], key="download_location")
-
         if download_location:
-            # Generate the XLSX data
             xlsx_data = get_table_download_link(df)
 
-            # Save the DataFrame as an XLSX file to the user-specified location
             with open(download_location.name, 'wb') as file:
                 file.write(base64.b64decode(xlsx_data.split(",")[1]))
-
             st.write(f"Downloaded XLSX file to: {download_location.name}")

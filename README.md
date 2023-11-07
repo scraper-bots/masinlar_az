@@ -1,6 +1,6 @@
 ---
 
-# Scrapy-Streamlit Web App
+# scrapy_streamlit
 
 **Table of Contents:**
 

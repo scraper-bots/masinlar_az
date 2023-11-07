@@ -1,7 +1,5 @@
 ---
 
-# scrapy_streamlit
-
 **Table of Contents:**
 
 - [Description](#description)

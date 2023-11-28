@@ -2,7 +2,7 @@ import scrapy
 
 
 class PropertySpider(scrapy.Spider):
-    name = "main"
+    name = "emlak_az"
     allowed_domains = ["emlak.az"]
     start_urls = ["https://emlak.az/elanlar/?ann_type=1&sort_type=0&page=595&page=1"]
 

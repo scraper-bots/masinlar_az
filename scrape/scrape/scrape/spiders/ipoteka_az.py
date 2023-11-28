@@ -2,7 +2,7 @@ import scrapy
 
 
 class PropertySpider(scrapy.Spider):
-    name = "link_extractor"
+    name = "ipoteka_az"
     allowed_domains = ["ipoteka.az"]
     start_urls = ["https://ipoteka.az/"]
 

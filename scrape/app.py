@@ -8,7 +8,7 @@ import base64
 from threading import Thread
 
 
-@st.cache(allow_output_mutation=True)
+@st.cache_data
 def run_scrapy_spider(spider_name):
     project_path = "scrape/scrape/scrape/spiders/"
     subprocess.run(["scrapy", "crawl", spider_name], cwd=project_path)

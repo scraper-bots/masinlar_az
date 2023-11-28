@@ -43,7 +43,25 @@ def get_table_download_link(df):
 
 st.title("Web Scraping with Scrapy")
 selected_spider = st.selectbox("Select a Spider to Run", [
-                               "bina_az", "turbo_az", "emlak_az", "ipoteka_az"])
+                               "bina_az", 
+                               "turbo_az", 
+                               "emlak_az", 
+                               "ipoteka_az",
+                               "vipemlak_az",
+                               "birja_com",
+                               "arenda_az",
+                               "h2h_az",
+                               "boss_az",
+                               "qarabazar_az",
+                               "birja-in_az",
+                               "bul_az",
+                               "ucuztap_az",
+                               "unvan_az",
+                               "yeniemlak_az",
+                               "rahatemlak_az",
+                               "lalafo_az"
+                               ]
+                               )
 
 if st.button(f"Run {selected_spider} Spider"):
     st.info(f"Running {selected_spider} Spider. This may take some time...")

@@ -8,6 +8,7 @@ import base64
 from threading import Thread
 
 
+@st.cache(allow_output_mutation=True)
 def run_scrapy_spider(spider_name):
     project_path = "scrape/scrape/scrape/spiders/"
     subprocess.run(["scrapy", "crawl", spider_name], cwd=project_path)
@@ -43,30 +44,28 @@ def get_table_download_link(df):
 
 st.title("Web Scraping with Scrapy")
 selected_spider = st.selectbox("Select a Spider to Run", [
-                               "bina_az", 
-                               "turbo_az", 
-                               "emlak_az", 
-                               "ipoteka_az",
-                               "vipemlak_az",
-                               "birja_com",
-                               "arenda_az",
-                               "h2h_az",
-                               "boss_az",
-                               "qarabazar_az",
-                               "birja-in_az",
-                               "bul_az",
-                               "ucuztap_az",
-                               "unvan_az",
-                               "yeniemlak_az",
-                               "rahatemlak_az",
-                               "lalafo_az"
-                               ]
-                               )
+    "bina_az",
+    "turbo_az",
+    "emlak_az",
+    "ipoteka_az",
+    "vipemlak_az",
+    "birja_com",
+    "arenda_az",
+    "h2h_az",
+    "boss_az",
+    "qarabazar_az",
+    "birja-in_az",
+    "bul_az",
+    "ucuztap_az",
+    "unvan_az",
+    "yeniemlak_az",
+    "rahatemlak_az",
+    "lalafo_az"
+])
 
 if st.button(f"Run {selected_spider} Spider"):
     st.info(f"Running {selected_spider} Spider. This may take some time...")
-    thread = Thread(target=run_spider_and_notify, args=(selected_spider,))
-    thread.start()
+    run_spider_and_notify(selected_spider)
 
 data_path = f"scrape/scrape/scrape/spiders/{selected_spider}_output.json"
 scraped_data = load_and_display_data(data_path)

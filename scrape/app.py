@@ -19,7 +19,7 @@ def load_and_display_data(data_path):
     else:
         st.write("No data available. Please run the spider first.")
 st.title("Web Scraping with Scrapy")
-selected_spider = st.selectbox("Select a Spider to Run", ["bina_az", "turbo_az"])
+selected_spider = st.selectbox("Select a Spider to Run", ["bina_az", "turbo_az","emlak_az","ipoteka_az"])
 if st.button(f"Run {selected_spider.capitalize()} Spider"):
     run_scrapy_spider(selected_spider)
     st.write(f"{selected_spider.capitalize()} Spider has been run. Please reload the page to see the scraped data.")

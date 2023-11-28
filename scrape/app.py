@@ -9,7 +9,7 @@ from threading import Thread
 
 
 def run_scrapy_spider(spider_name):
-    project_path = "scrape/scrape/scrape/spiders"
+    project_path = "scrape/scrape/scrape/spiders/"
     subprocess.run(["scrapy", "crawl", spider_name], cwd=project_path)
 
 

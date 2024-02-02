@@ -1,4 +1,4 @@
-# Scrapy settings for scrape project
+# Scrapy settings for scrapyP project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,21 +7,18 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = "scrape"
+BOT_NAME = "scrapyP"
 
-SPIDER_MODULES = ["scrape.spiders"]
-NEWSPIDER_MODULE = "scrape.spiders"
+SPIDER_MODULES = ["scrapyP.spiders"]
+NEWSPIDER_MODULE = "scrapyP.spiders"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "scrape (+http://www.yourdomain.com)"
+#USER_AGENT = "scrapyP (+http://www.yourdomain.com)"
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 
 # Obey robots.txt rules
-# ROBOTSTXT_OBEY = True
-
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
 ROBOTSTXT_OBEY = False
-
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -49,13 +46,13 @@ ROBOTSTXT_OBEY = False
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "scrape.middlewares.ScrapeSpiderMiddleware": 543,
+#    "scrapyP.middlewares.ScrapypSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    "scrape.middlewares.ScrapeDownloaderMiddleware": 543,
+#    "scrapyP.middlewares.ScrapypDownloaderMiddleware": 543,
 #}
 
 # Enable or disable extensions
@@ -67,7 +64,7 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    "scrape.pipelines.ScrapePipeline": 300,
+#    "scrapyP.pipelines.ScrapypPipeline": 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -10,7 +10,7 @@ class LinksAndContentSpider(scrapy.Spider):
 
     def start_requests(self):
         for url in self.start_urls:
-            yield SplashRequest(url, self.parse_links, args={'wait': 2})
+            yield SplashRequest(url, self.parse_links, args={'wait': 0.5})
 
     def parse_links(self, response):
         links = response.css('li.new_elan_box a::attr(href)').getall()

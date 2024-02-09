@@ -32,7 +32,7 @@ class PropertySpider(scrapy.Spider):
 
     def parse_property(self, response):
         user_name = response.xpath('//div[@class="user"]/text()').get()
-        phone_number = response.xpath('//div[@class="showNumber active"]/text()').get()
+        phone_number = response.css('ul.links div.active::attr(number)').get()
         announcement_id = response.xpath(
             '//div[@class="stats"]//div[contains(text(), "Elan İD")]/following-sibling::div[1]/text()').get()
         update_date = response.xpath(

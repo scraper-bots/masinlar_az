@@ -12,15 +12,12 @@ class CombinedSpider(scrapy.Spider):
                   "https://vipemlak.az/torpaq/?start=1"]
 
     def parse(self, response):
-        # Extract links from the current page
         links = response.css('div.pranto.prodbig a::attr(href)').getall()
 
-        # Follow each link and extract the phone number
         for link in links:
             full_link = urljoin(response.url, link)
             yield scrapy.Request(url=full_link, callback=self.parse_phone_number)
 
-        # Extract and follow pagination links
         pagination_links = response.css('div.pagination a::attr(href)').getall()
         for link in pagination_links:
             full_pagination_link = urljoin(response.url, link)

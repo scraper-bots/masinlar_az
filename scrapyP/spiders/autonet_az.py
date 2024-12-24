@@ -161,7 +161,7 @@ async def main():
 
     try:
         # Start with test range
-        results = await scraper.scrape(start_page=1, end_page=3)
+        results = await scraper.scrape(start_page=1, end_page=236)
         
         if results:
             scraper.save_to_csv()

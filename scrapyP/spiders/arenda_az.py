@@ -1,5 +1,5 @@
 import scrapy
-from scrapy_splash import SplashRequest
+# from scrapy_splash import SplashRequest
 
 
 class LinksAndContentSpider(scrapy.Spider):

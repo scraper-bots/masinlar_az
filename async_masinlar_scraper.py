@@ -38,18 +38,20 @@ class AsyncMasinlarScraper:
             'Upgrade-Insecure-Requests': '1'
         }
     
-    async def fetch(self, session: aiohttp.ClientSession, url: str, method: str = 'GET', data=None) -> Optional[aiohttp.ClientResponse]:
+    async def fetch(self, session: aiohttp.ClientSession, url: str, method: str = 'GET', data=None, headers=None, return_json: bool = False) -> Optional[str]:
         """Fetch a URL with semaphore limiting"""
         async with self.semaphore:
             try:
                 if method == 'GET':
-                    async with session.get(url) as response:
+                    async with session.get(url, headers=headers) as response:
                         response.raise_for_status()
                         return await response.text()
                 else:  # POST
-                    async with session.post(url, data=data) as response:
+                    async with session.post(url, data=data, headers=headers) as response:
                         response.raise_for_status()
-                        return await response.json()
+                        if return_json:
+                            return await response.json()
+                        return await response.text()
             except Exception as e:
                 logger.error(f"Error fetching {url}: {e}")
                 return None
@@ -223,14 +225,25 @@ class AsyncMasinlarScraper:
         
         return car_info
     
-    async def scrape_listing_page(self, session: aiohttp.ClientSession, url: str) -> List[str]:
-        """Scrape a listing page and return car detail URLs"""
-        html = await self.fetch(session, url)
+    async def scrape_listing_page(self, session: aiohttp.ClientSession, url: str, start: int = 0, referer: str = None) -> List[str]:
+        """Scrape a listing page using POST request and return car detail URLs"""
+        # AJAX headers for pagination POST request
+        ajax_headers = {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Accept': '*/*',
+            'Origin': self.base_url,
+            'Referer': referer or f"{self.base_url}/masin-satisi/"
+        }
+
+        post_data = {'start': start}
+
+        html = await self.fetch(session, url, method='POST', data=post_data, headers=ajax_headers)
         if not html:
             return []
-        
+
         links = self.extract_listing_links(html)
-        logger.debug(f"Found {len(links)} car links on {url}")
+        logger.debug(f"Found {len(links)} car links on {url} (start={start})")
         return links
     
     async def scrape_cars_batch(self, session: aiohttp.ClientSession, car_urls: List[str]) -> List[Dict]:
@@ -248,54 +261,57 @@ class AsyncMasinlarScraper:
         return cars
     
     async def scrape_with_pagination(self, start_url: str, max_pages: Optional[int] = None) -> List[Dict]:
-        """Scrape multiple pages with pagination - detects when site loops back to beginning"""
+        """Scrape multiple pages with pagination using POST requests - detects when site loops back to beginning"""
         all_cars = []
         current_page = 1
         consecutive_empty_pages = 0
-        max_consecutive_empty = 3  # Stop after 3 consecutive empty pages  
+        max_consecutive_empty = 3  # Stop after 3 consecutive empty pages
         safety_limit = 60  # Based on site analysis - loops after ~40 pages
         seen_car_urls = set()  # Track seen URLs to detect loops
         first_page_urls = []  # Store first page URLs to detect loop
-        
+
         # Extract start parameter from URL
         parsed_url = urlparse(start_url)
         query_params = parse_qs(parsed_url.query)
         start_param = int(query_params.get('start', [0])[0])
-        
+
         base_listing_url = f"{self.base_url}/masin-satisi/"
-        
+
         connector = aiohttp.TCPConnector(limit=50, limit_per_host=20)
         timeout = aiohttp.ClientTimeout(total=30)
-        
+
         async with aiohttp.ClientSession(
-            headers=self.headers, 
-            connector=connector, 
+            headers=self.headers,
+            connector=connector,
             timeout=timeout
         ) as session:
-            
+
             while True:
                 # Safety check to prevent infinite loops
                 if current_page > safety_limit:
                     logger.warning(f"Reached safety limit of {safety_limit} pages. Stopping.")
                     break
-                    
+
                 # Only check max_pages if explicitly set
                 if max_pages and current_page > max_pages:
                     logger.info(f"Reached max_pages limit: {max_pages}")
                     break
-                
+
                 current_start = start_param + (current_page - 1) * 20
+                # URL for POST request (start param sent in body, not query string)
                 current_url = f"{base_listing_url}?start={current_start}"
-                
+                # Referer should point to previous page
+                prev_start = max(0, current_start - 20) if current_page > 1 else 0
+                referer_url = f"{base_listing_url}?start={prev_start}"
+
                 logger.info(f"Scraping page {current_page}: start={current_start} (Total cars so far: {len(all_cars)})")
-                
+
                 # Progress update every 50 pages
                 if current_page % 50 == 0:
-                    elapsed = time.time() - time.time()  # This will be set from caller
                     print(f"🔄 Progress: Page {current_page}, Total cars: {len(all_cars)}")
-                
-                # Get car URLs from current page
-                car_urls = await self.scrape_listing_page(session, current_url)
+
+                # Get car URLs from current page using POST request
+                car_urls = await self.scrape_listing_page(session, current_url, start=current_start, referer=referer_url)
                 
                 if not car_urls:
                     consecutive_empty_pages += 1
